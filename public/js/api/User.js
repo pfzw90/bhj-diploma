@@ -1,66 +1,118 @@
-/**
- * Класс User управляет авторизацией, выходом и
- * регистрацией пользователя из приложения
- * Имеет свойство URL, равное '/user'.
- * */
+
 class User {
-  /**
-   * Устанавливает текущего пользователя в
-   * локальном хранилище.
-   * */
+  constructor() {
+    this.URL = '/user'
+  }
+ 
   static setCurrent(user) {
-
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
-  /**
-   * Удаляет информацию об авторизованном
-   * пользователе из локального хранилища.
-   * */
   static unsetCurrent() {
-
+    localStorage.removeItem('user');
   }
 
-  /**
-   * Возвращает текущего авторизованного пользователя
-   * из локального хранилища
-   * */
   static current() {
-
+    return localStorage.getItem('user');
   }
 
-  /**
-   * Получает информацию о текущем
-   * авторизованном пользователе.
-   * */
   static fetch( data, callback = f => f ) {
-
+    let options = {
+      url: '/user/current', 
+      data: data,
+      responseType: 'json', 
+      method: 'GET',
+      callback: function(err, response) {
+        if (response.success && response.user) {
+          let user = {
+            id: response.user.id,
+            name: response.user.name
+          };
+          this.setCurrent(user);
+        } else {
+          this.unsetCurrent();
+        }
+        callback();
+      }
+    }
+ 
+    return createRequest(options);
+    
   }
 
-  /**
-   * Производит попытку авторизации.
-   * После успешной авторизации необходимо
-   * сохранить пользователя через метод
-   * User.setCurrent.
-   * */
   static login( data, callback = f => f ) {
-
+    let options = {
+      url: '/user/login', 
+      data: data,
+      responseType: 'json', 
+      method: 'POST',
+      callback: (err, response) => {
+        if (response && response.user) {
+        let user = {
+          id: response.user.id,
+          name: response.user.name
+        };
+        this.setCurrent(user);
+        } else {
+          console.log('Ошибка авторизации' + err);
+        }
+        callback();
+      }
+    }    
+    const xhr = createRequest(options);
+    console.log(xhr)
+    return xhr;
   }
 
-  /**
-   * Производит попытку регистрации пользователя.
-   * После успешной авторизации необходимо
-   * сохранить пользователя через метод
-   * User.setCurrent.
-   * */
-  static register( data, callback = f => f ) {
 
-  }
 
-  /**
-   * Производит выход из приложения. После успешного
-   * выхода необходимо вызвать метод User.unsetCurrent
-   * */
-  static logout( data, callback = f => f ) {
 
-  }
-}
+//   static register( data, callback = f => f ) {
+//     let options = {
+//       url: '/user/register', 
+//       data: data,
+//       responseType: 'json', 
+//       method: 'POST'
+//     }
+    
+//     try {
+//       const xhr = createRequest(options);
+//       if (xhr.response.success) {
+//         let user = {
+//           id: xhr.response.user.id,
+//           name: xhr.response.user.name
+//         };
+        
+//         this.setCurrent(user);
+//       }
+
+//       callback(none, xhr.response);
+//     } catch (e) {
+//       callback (e);
+//     } finally {
+//       return xhr;
+//     }
+//   }
+
+
+//   static logout( data, callback = f => f ) {
+//     let options = {
+//       url: '/user/logout', 
+//       data: data,
+//       responseType: 'json', 
+//       method: 'POST'
+//     }
+    
+//     try {
+//       const xhr = createRequest(options);
+//       if (xhr.response.success) {
+//         this.unsetCurrent();
+//       }
+//       callback(none, xhr.response);
+//     } catch (e) {
+//       callback (e);
+//     } finally {
+//       return xhr;
+//     }
+//   }
+// }
