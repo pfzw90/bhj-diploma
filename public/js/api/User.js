@@ -37,7 +37,6 @@ class User {
     }
  
     return createRequest(options);
-    
   }
 
   static login( data, callback = f => f ) {
@@ -59,9 +58,7 @@ class User {
         callback();
       }
     }    
-    const xhr = createRequest(options);
-    console.log(xhr)
-    return xhr;
+    return createRequest(options);
   }
 
 
@@ -115,4 +112,4 @@ class User {
 //       return xhr;
 //     }
 //   }
-// }
+}

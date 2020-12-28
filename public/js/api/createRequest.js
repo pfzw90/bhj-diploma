@@ -32,8 +32,8 @@ const createRequest = (options) => {
   
         req.addEventListener('readystatechange', function() {
               if (this.readystate === req.DONE && this.status === 200) {
-                if (response.success) options.callback(null, response);
-                else {console.log('fail'); options.callback(response.error)};
+                if (this.response.success) options.callback(null, response);
+                else {console.log('fail'); options.callback(this.response.error)};
             }
         });
 
