@@ -1,53 +1,30 @@
 class Entity {
-  constructor() {
-    this.URL = '';
-  }
-
+  static URL = ''
+  
   static list( data, callback = f => f ) {
     let options = {
       url: this.URL, 
       data: data,
       responseType: 'json', 
       method: 'GET',
-      callback: (err, response) => {
-        console.log( 'Ошибка, если есть', err );
-        console.log( 'Данные, если нет ошибки', response );
+      callback: (err, response) => callback(err, response)
       }
-    }
-
-    try {
-      const xhr = createRequest(options);
-      callback(none, xhr.response);
-    } catch (e) {
-      callback (e);
-    } finally {
-      return xhr;
-    }
+      console.log(options)
+    return createRequest(options);
   }
 
   static create( data, callback = f => f ) {
-    
     Object.assign({method : 'PUT'}, data)
     let options = {
       url: this.URL, 
       data: data,
       responseType: 'json', 
       method: 'POST',
-      callback: (err, response) => {
-        console.log( 'Ошибка, если есть', err );
-        console.log( 'Данные, если нет ошибки', response );
-      }
+      callback: (err, response)  => callback(err, response)
     }
-
-    try {
-    const xhr = createRequest(options);
-      callback(none, xhr.response);
-    } catch (e) {
-      callback (e);
-    } finally {
-      return xhr;
-    }
+    return createRequest(options);
   }
+    
 
   static get( id = '', data, callback = f => f ) {
     let options = {
@@ -55,20 +32,9 @@ class Entity {
       data: data,
       responseType: 'json', 
       method: 'GET',
-      callback: (err, response) => {
-        console.log( 'Ошибка, если есть', err );
-        console.log( 'Данные, если нет ошибки', response );
-      }
+      callback: (err, response)  => callback(err, response)
     }
-
-    try {
-      const xhr = createRequest(options);
-        callback(none, xhr.response);
-      } catch (e) {
-        callback (e);
-      } finally {
-        return xhr;
-      }
+    return createRequest(options);
   }
 
   static remove( id = '', data, callback = f => f ) {
@@ -78,21 +44,9 @@ class Entity {
       data: data,
       responseType: 'json', 
       method: 'POST',
-      callback: (err, response) => {
-        console.log( 'Ошибка, если есть', err );
-        console.log( 'Данные, если нет ошибки', response );
-      }
+      callback: (err, response) => callback(err, response)
     }
-
-    try {
-    const xhr = createRequest(options);
-      callback(none, xhr.response);
-    } catch (e) {
-      callback (e);
-    } finally {
-      return xhr;
-    }
-
+    return createRequest(options);
   }
 }
 

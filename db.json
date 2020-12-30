@@ -6,6 +6,69 @@
       "password": "demo",
       "id": "1",
       "isAuthorized": false
+    },
+    {
+      "name": "Наталья",
+      "email": "pfzw90@gmail.com",
+      "password": "123",
+      "id": "1qfcyn95wkj9zdp1x",
+      "isAuthorized": false
+    },
+    {
+      "name": "Наталья",
+      "email": "pf@pf.ru",
+      "password": "lsdfj",
+      "id": "1qfcyn9gwkj9zfm7b",
+      "isAuthorized": false
+    },
+    {
+      "name": "df",
+      "email": "pf@pg.ru",
+      "password": "ldsfj",
+      "id": "1qfcyn1pokj9zj7r0",
+      "isAuthorized": false
+    },
+    {
+      "name": "ss@gg.ru",
+      "email": "ss@gg.ru",
+      "password": "kldjf",
+      "id": "1qfcyn7zkkj9zmib0",
+      "isAuthorized": false
+    },
+    {
+      "name": "ss@ggg.ru",
+      "email": "ss@ggg.ru",
+      "password": "1234",
+      "id": "1qfcyn7ekkj9zpdbz",
+      "isAuthorized": false
+    },
+    {
+      "name": "pf@pg.rui",
+      "email": "pf@pg.rui",
+      "password": "pf@pg.rui",
+      "id": "1qfcyn754kj9zsbq4",
+      "isAuthorized": false
+    },
+    {
+      "name": "p@p.ru",
+      "email": "lksdj@p.ru",
+      "password": "lkdsjf",
+      "id": "1qfcyn2mckj9ztxu7",
+      "isAuthorized": false
+    },
+    {
+      "name": "p@p.ru",
+      "email": "p@p.ru",
+      "password": "1234",
+      "id": "1qfcyn9bskja3bxfq",
+      "isAuthorized": false
+    },
+    {
+      "name": "g@g.ru",
+      "email": "g@g.ru",
+      "password": "1234",
+      "id": "1qfcyn7vwkja3hn88",
+      "isAuthorized": true
     }
   ],
   "accounts": [

@@ -5,9 +5,9 @@ class RegisterForm extends AsyncForm {
         throw new Error('Ошибка регистрации:' + err);
       }
       else {
-        this.reset();
+        document.getElementById('register-form').reset();
         App.setState('user-logged');
-        App.getModal('#modal-register').close();
+        App.getModal('register').close();
       }
     })
   }

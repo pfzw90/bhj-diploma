@@ -12,7 +12,7 @@ class UserWidget {
   update() {
     const user = User.current()
     if (user) {
-      document.getElementById('user-name').innerText = user.name;
+      document.querySelector('p.user-name').innerText = user.name;
     }
   }
 }

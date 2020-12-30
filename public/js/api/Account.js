@@ -1,5 +1,3 @@
-class Account extends Entity{
-    constructor() {
-        this.URL = '/account'
-    }
+class Account extends Entity {
+    static URL = '/account'
 }

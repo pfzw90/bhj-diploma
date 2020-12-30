@@ -1,9 +1,8 @@
 
 class User {
-  constructor() {
-    this.URL = '/user'
-  }
- 
+
+  static URL = '/user'
+
   static setCurrent(user) {
     localStorage.setItem('user', JSON.stringify(user));
   }
@@ -13,103 +12,77 @@ class User {
   }
 
   static current() {
-    return localStorage.getItem('user');
+    return JSON.parse(localStorage.getItem('user'));
   }
 
   static fetch( data, callback = f => f ) {
     let options = {
-      url: '/user/current', 
+      url: this.URL + '/current', 
       data: data,
       responseType: 'json', 
       method: 'GET',
       callback: function(err, response) {
-        if (response.success && response.user) {
-          let user = {
-            id: response.user.id,
-            name: response.user.name
-          };
-          this.setCurrent(user);
+          if (response.success && response.user) {
+          let user = { id: response.user.id, name: response.user.name };
+          User.setCurrent(user);
         } else {
-          this.unsetCurrent();
-        }
-        callback();
+          User.unsetCurrent();
+         }
+        callback(err, response);
       }
     }
- 
     return createRequest(options);
   }
 
   static login( data, callback = f => f ) {
     let options = {
-      url: '/user/login', 
+      url: this.URL +'/login', 
       data: data,
       responseType: 'json', 
       method: 'POST',
       callback: (err, response) => {
         if (response && response.user) {
-        let user = {
-          id: response.user.id,
-          name: response.user.name
-        };
-        this.setCurrent(user);
-        } else {
-          console.log('Ошибка авторизации' + err);
-        }
-        callback();
-      }
+          let user = { id: response.user.id, name: response.user.name };
+          User.setCurrent(user);
+        } 
+        callback(err, response)
+      }     
     }    
     return createRequest(options);
   }
 
 
+  static register( data, callback = f => f ) {
+    let options = {
+      url: this.URL+ '/register', 
+      data: data,
+      responseType: 'json', 
+      method: 'POST',
+      callback: (err, response) => {
+        if (response && response.user) {
+          let user = { id: response.user.id, name: response.user.name };
+          User.setCurrent(user);
+        } 
+        callback(err, response)
+      }     
+    }    
+    return createRequest(options);
+  }
 
 
-//   static register( data, callback = f => f ) {
-//     let options = {
-//       url: '/user/register', 
-//       data: data,
-//       responseType: 'json', 
-//       method: 'POST'
-//     }
-    
-//     try {
-//       const xhr = createRequest(options);
-//       if (xhr.response.success) {
-//         let user = {
-//           id: xhr.response.user.id,
-//           name: xhr.response.user.name
-//         };
-        
-//         this.setCurrent(user);
-//       }
-
-//       callback(none, xhr.response);
-//     } catch (e) {
-//       callback (e);
-//     } finally {
-//       return xhr;
-//     }
-//   }
-
-
-//   static logout( data, callback = f => f ) {
-//     let options = {
-//       url: '/user/logout', 
-//       data: data,
-//       responseType: 'json', 
-//       method: 'POST'
-//     }
-    
-//     try {
-//       const xhr = createRequest(options);
-//       if (xhr.response.success) {
-//         this.unsetCurrent();
-//       }
-//       callback(none, xhr.response);
-//     } catch (e) {
-//       callback (e);
-//     } finally {
-//       return xhr;
-//     }
-//   }
+  static logout( data, callback = f => f ) {
+    let options = {
+      url: this.URL + '/logout', 
+      data: data,
+      responseType: 'json', 
+      method: 'POST',
+      callback: (err, response) => {
+        if (response && response.success) {
+          User.unsetCurrent();
+        } 
+        callback(err, response);
+      }
+    }
+    return createRequest(options);
+  }
 }

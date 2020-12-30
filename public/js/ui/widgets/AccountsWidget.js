@@ -13,7 +13,14 @@ class AccountsWidget {
    * необходимо выкинуть ошибку.
    * */
   constructor( element ) {
-
+    if (element) {
+      this.element = element;
+      this.registerEvents();
+      this.update();
+    }
+    else {
+      throw new Error('Не передан элемент user widget!')
+    }
   }
 
   /**
@@ -24,6 +31,10 @@ class AccountsWidget {
    * вызывает AccountsWidget.onSelectAccount()
    * */
   registerEvents() {
+    document.querySelector('span.create-account').addEventListener('click', function(ev) {
+      ev.preventDefault();
+      App.getModal('createAccount').open();
+    });
 
   }
 
@@ -38,8 +49,15 @@ class AccountsWidget {
    * метода renderItem()
    * */
   update() {
-
-  }
+    if (User.current()) {
+      Account.list(User.current(), (err, response) => {
+      if (response) {
+        this.clear();
+        this.renderItem(response);
+      }
+      else console.log(err)
+    })}}
+    
 
   /**
    * Очищает список ранее отображённых счетов.
@@ -47,7 +65,7 @@ class AccountsWidget {
    * в боковой колонке
    * */
   clear() {
-
+    Array.from(document.getElementsByClassName('account')).forEach(elem => elem.remove());
   }
 
   /**
@@ -58,6 +76,9 @@ class AccountsWidget {
    * Вызывает App.showPage( 'transactions', { account_id: id_счёта });
    * */
   onSelectAccount( element ) {
+    Array.from(document.getElementsByClassName('account')).forEach(elem => elem.className='accont')
+    element.classList.add('active')
+    App.showPage('transactions', { account_id: id_счёта })
 
   }
 
@@ -67,7 +88,26 @@ class AccountsWidget {
    * item - объект с данными о счёте
    * */
   getAccountHTML( item ) {
+ 
+    let li = document.createElement('li');
+    li.className = 'active account'
+    li.dataset.id = item.id;
 
+    let a = document.createElement('a')
+    a.href = '#'
+
+    let nameSpan = document.createElement('span');
+    nameSpan.innerText = item.name
+
+    
+    let sumSpan = document.createElement('span');
+    sumSpan.innerText = new Intl.NumberFormat().format(item.sum)
+
+    a.insertAdjacentElement('beforeend', nameSpan)
+    a.insertAdjacentElement('beforeend', sumSpan)
+    li.insertAdjacentElement('beforeend', a)
+
+    return li.innerHTML
   }
 
   /**
@@ -77,6 +117,6 @@ class AccountsWidget {
    * и добавляет его внутрь элемента виджета
    * */
   renderItem( item ) {
-
+    item.data.forEach(i => this.element.insertAdjacentElement('beforeend', i));
   }
 }

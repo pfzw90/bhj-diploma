@@ -13,7 +13,7 @@ const createRequest = (options) => {
     if (options.method === 'GET') {
         let linkData = [];
         for (let d in options.data) {
-            linkData.push(encodeURIComponent(d) + '=' + encodeURIComponent(options.data[d]));
+            linkData.push(d + '=' + options.data[d]);
         }
         url += '?' + linkData.join('&')
     }
@@ -24,30 +24,28 @@ const createRequest = (options) => {
             formData.set(d, options.data[d])
            }          
     }
-
         req.open(options.method, url);
         req.withCredentials = true;
         req.responseType = options.responseType;
         setHeaders(req, options.headers);
   
         req.addEventListener('readystatechange', function() {
-              if (this.readystate === req.DONE && this.status === 200) {
-                if (this.response.success) options.callback(null, response);
-                else {console.log('fail'); options.callback(this.response.error)};
+                    if (this.readyState === req.DONE && req.status === 200) {
+                 options.callback(req.response.error, req.response);
             }
         });
 
-    try {    
-            if (formData) {
-                req.send(formData);
-            } else {
+    try {   
+        if (options.method === 'GET') {
                 req.send();
-            }   
+            }
+        else {          
+                req.send(formData);
+            } 
     } catch (e) {
         options.callback(e);
-    } finally {
-        console.log(req)
-    return req;
+      } finally {
+       return req;
     }
 }
 

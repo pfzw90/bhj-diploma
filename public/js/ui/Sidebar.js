@@ -16,7 +16,6 @@ class Sidebar {
   static initAuthLinks() {
     document.querySelector('li.menu-item.menu-item_register').addEventListener('click', function(ev) {
       ev.preventDefault();
-      console.log(App.getModal('modal-register'))
       App.getModal('register').open();
     });
 
@@ -27,9 +26,11 @@ class Sidebar {
 
     document.querySelector('li.menu-item.menu-item_logout').addEventListener('click', function(ev) {
       ev.preventDefault();
-      if (User.logout().response.success) {
+      User.logout(User.current(), (error, response) => {
+        if (response.success) {
          App.setState('init');
-      }
+        }
+      });
     });
   }
 

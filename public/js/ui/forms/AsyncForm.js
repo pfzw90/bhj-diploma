@@ -13,7 +13,6 @@ class AsyncForm {
     let data = {}
     for (let inp of Array.from(this.element.querySelectorAll('input'))) {
       data[inp.getAttribute('name')] = inp.value;
-
     }
     return data;
   }
@@ -23,7 +22,6 @@ class AsyncForm {
     this.onSubmit(this.getData());
   }
 
-  
   registerEvents() {
     this.element.addEventListener('submit', (ev) =>{
       ev.preventDefault();

@@ -2,7 +2,7 @@
 
 class Modal {
    constructor( element ) {
-     console.log(element)
+
     if (element) {
       this.element = element;
       this.registerEvents();
