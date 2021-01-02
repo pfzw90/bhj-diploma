@@ -1,104 +1,116 @@
-/**
- * Класс TransactionsPage управляет
- * страницей отображения доходов и
- * расходов конкретного счёта
- * */
 class TransactionsPage {
-  /**
-   * Если переданный элемент не существует,
-   * необходимо выкинуть ошибку.
-   * Сохраняет переданный элемент и регистрирует события
-   * через registerEvents()
-   * */
-  constructor( element ) {
 
+  constructor(element) {
+    if (element) {
+      this.element = element;
+      this.registerEvents();
+    } else { throw new Error('Не передан элемент Transactions Page!') }
   }
 
-  /**
-   * Вызывает метод render для отрисовки страницы
-   * */
   update() {
-
+    if (this.lastOptions) {
+      this.render(this.lastOptions)
+    } else { this.render() }
   }
 
-  /**
-   * Отслеживает нажатие на кнопку удаления транзакции
-   * и удаления самого счёта. Внутри обработчика пользуйтесь
-   * методами TransactionsPage.removeTransaction и
-   * TransactionsPage.removeAccount соответственно
-   * */
   registerEvents() {
-
+    this.element.addEventListener('click', (ev) => {
+      let target = ev.target;
+      if (ev.target.classList.contains('fa-trash')) target = ev.target.parentNode;
+      if (target.classList.contains('transaction__remove')) this.removeTransaction(target.dataset.id);
+      if (ev.target.classList.contains('remove-account')) this.removeAccount();
+    });
   }
 
-  /**
-   * Удаляет счёт. Необходимо показать диаголовое окно (с помощью confirm())
-   * Если пользователь согласен удалить счёт, вызовите
-   * Account.remove, а также TransactionsPage.clear с
-   * пустыми данными для того, чтобы очистить страницу.
-   * По успешному удалению необходимо вызвать метод App.update()
-   * для обновления приложения
-   * */
   removeAccount() {
-
+    if (this.lastOptions && confirm('Вы действительно хотите удалить счёт?')) {
+        Account.remove(this.lastOptions.account_id,this.lastOptions, (err) => {
+        if (!err) {
+          this.clear();
+          App.update();
+    }})}
   }
-
-  /**
-   * Удаляет транзакцию (доход или расход). Требует
-   * подтверждеия действия (с помощью confirm()).
-   * По удалению транзакции вызовите метод App.update()
-   * */
-  removeTransaction( id ) {
-
+  
+  removeTransaction(id) {
+    if (this.lastOptions && confirm('Вы действительно хотите удалить транзакцию?')) {
+        Transaction.remove(id, this.lastOptions, (err) => {
+          if (!err) { App.update() }})
+    }
   }
+  
+  
+  render(options) {
+    if (options) {
+      Account.get(options.account_id, options, (err, response) => {
+        if (!err) {
+          this.clear();
+          this.lastOptions = options;
+          this.renderTitle(response.data.name);
 
-  /**
-   * С помощью Account.get() получает название счёта и отображает
-   * его через TransactionsPage.renderTitle.
-   * Получает список Transaction.list и полученные данные передаёт
-   * в TransactionsPage.renderTransactions()
-   * */
-  render( options ) {
-
+          Transaction.list(options, (err, response) => {
+            if (!err) {
+              this.renderTransactions(response.data);
+          }});
+      }});
+    }
   }
-
-  /**
-   * Очищает страницу. Вызывает
-   * TransactionsPage.renderTransactions() с пустым массивом.
-   * Устанавливает заголовок: «Название счёта»
-   * */
+      
+  
   clear() {
-
+    delete this.lastOptions;
+    Array.from(this.element.querySelector('.content').children).forEach(elem => elem.remove());
+    this.renderTransactions([]);
+    this.renderTitle('Название счёта');
   }
 
-  /**
-   * Устанавливает заголовок в элемент .content-title
-   * */
-  renderTitle( name ) {
+  renderTitle(name) { document.querySelector('span.content-title').innerText = name }
 
+  formatDate(date) {
+    let months = {'01': 'января',
+    '02': 'февраля',
+    '03': 'марта',
+    '04': 'апреля',
+    '05': 'мая',
+    '06': 'июня',
+    '07': 'июля',
+    '08': 'августа',
+    '09': 'сентября',
+    '10': 'октяюбря',
+    '11': 'ноября',
+    '12': 'декабря'};
+    let template = /(\d{4})-(\d{2})-(\d{2})\D{1}(\d{2}):(\d{2})/gm;
+    let d = template.exec(date);
+    return `${d[3]} ${months[d[2]]} ${d[1]} в ${d[4]}:${d[5]}`
   }
 
-  /**
-   * Форматирует дату в формате 2019-03-10 03:20:41 (строка)
-   * в формат «10 марта 2019 г. в 03:20»
-   * */
-  formatDate( date ) {
-
+  getTransactionHTML(item) {
+    return `<div class="transaction transaction_${item.type.toLowerCase()} row">
+    <div class="col-md-7 transaction__details">
+      <div class="transaction__icon">
+          <span class="fa fa-money fa-2x"></span>
+      </div>
+      <div class="transaction__info">
+          <h4 class="transaction__title">${item.name}</h4>
+          <!-- дата -->
+          <div class="transaction__date">${this.formatDate(item.created_at)}</div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="transaction__summ">
+          ${item.sum} <span class="currency">₽</span>
+      </div>
+    </div>
+    <div class="col-md-2 transaction__controls">
+        <button class="btn btn-danger transaction__remove" data-id="${item.id}">
+            <i class="fa fa-trash"></i>  
+        </button>
+    </div>
+  </div>`
   }
 
-  /**
-   * Формирует HTML-код транзакции (дохода или расхода).
-   * item - объект с информацией о транзакции
-   * */
-  getTransactionHTML( item ) {
+  renderTransactions(data) {
+    for (let transaction of data) {
+      this.element.querySelector('.content').insertAdjacentHTML('beforeend', this.getTransactionHTML(transaction))
+  }}
 
-  }
-
-  /**
-   * Отрисовывает список транзакций на странице
-   * используя getTransactionHTML
-   * */
-  renderTransactions( data ) {
-
-  }
 }

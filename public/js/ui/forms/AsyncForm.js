@@ -1,36 +1,30 @@
 class AsyncForm {
   constructor( element ) {
-    if (element) {
+    if ( !element ) { throw new Error('Элемент формы не передан!') }
+    else { 
       this.element = element;
       this.registerEvents();
-      }
-    else {
-      throw new Error('Элемент формы не передан!')
     }
   }
 
   getData() {
     let data = {}
-    for (let inp of Array.from(this.element.querySelectorAll('input'))) {
-      data[inp.getAttribute('name')] = inp.value;
+    for (let inp of Array.from(this.element.querySelectorAll( 'input' )).concat(Array.from(this.element.querySelectorAll( 'select' )))) {
+      data[ inp.getAttribute( 'name' ) ] = inp.value;
     }
     return data;
   }
 
-
-  submit() {
-    this.onSubmit(this.getData());
-  }
+  submit() { this.onSubmit( this.getData() ) }
 
   registerEvents() {
-    this.element.addEventListener('submit', (ev) =>{
+    this.element.addEventListener( 'submit', (ev) => {
       ev.preventDefault();
       this.submit();
     });
   }
 
-  onSubmit(options) {
+  onSubmit( options ) {
   }
-
 
 }

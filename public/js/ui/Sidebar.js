@@ -6,32 +6,31 @@ class Sidebar {
   }
 
   static initToggleButton() {
-    document.querySelector("a.sidebar-toggle.visible-xs").addEventListener('click' , function(ev) {
+    document.querySelector( 'a.sidebar-toggle.visible-xs' ).addEventListener( 'click' , function( ev ) {
       ev.preventDefault();
-      document.querySelector("body").classList.toggle('sidebar-open');
-      document.querySelector("body").classList.toggle('sidebar-collapse');
+      document.querySelector( 'body' ).classList.toggle( 'sidebar-open' );
+      document.querySelector( 'body' ).classList.toggle( 'sidebar-collapse' );
     });
   }
 
   static initAuthLinks() {
-    document.querySelector('li.menu-item.menu-item_register').addEventListener('click', function(ev) {
+    document.querySelector( 'li.menu-item.menu-item_register' ).addEventListener( 'click', function( ev ) {
       ev.preventDefault();
-      App.getModal('register').open();
+      App.getModal( 'register' ).open();
     });
 
-    document.querySelector('li.menu-item.menu-item_login').addEventListener('click', function(ev) {
+    document.querySelector( 'li.menu-item.menu-item_login' ).addEventListener( 'click' , function( ev ) {
       ev.preventDefault();
-      App.getModal('login').open();
+      App.getModal( 'login' ).open();
     });
 
-    document.querySelector('li.menu-item.menu-item_logout').addEventListener('click', function(ev) {
+    document.querySelector( 'li.menu-item.menu-item_logout' ).addEventListener( 'click' , function( ev ) {
       ev.preventDefault();
-      User.logout(User.current(), (error, response) => {
-        if (response.success) {
-         App.setState('init');
-        }
-      });
+      User.logout( User.current(), (err) => {
+        if ( !err ) { App.setState('init') }
+      }); 
     });
+    
   }
 
 }

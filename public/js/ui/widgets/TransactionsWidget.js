@@ -11,7 +11,13 @@ class TransactionsWidget {
    * необходимо выкинуть ошибку.
    * */
   constructor( element ) {
-
+    if (element) {
+      this.element = element;
+      this.registerEvents();
+    }
+    else {
+      throw new Error('Не передан элемент Trasnactions Widget!')
+    }
   }
   /**
    * Регистрирует обработчики нажатия на
@@ -20,6 +26,15 @@ class TransactionsWidget {
    * экземпляра окна
    * */
   registerEvents() {
+    this.element.querySelector('.create-income-button').addEventListener('click', function(ev) {
+      ev.preventDefault();
+      App.getModal('newIncome').open();
+    })
+
+    this.element.querySelector('.create-expense-button').addEventListener('click', function(ev) {
+      ev.preventDefault();
+      App.getModal('newExpense').open();
+    });
 
   }
 }
